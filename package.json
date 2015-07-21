@@ -1,0 +1,55 @@
+{
+  "name": "waechter",
+  "version": "1.0.0-alpha.1",
+  "description": "",
+  "keywords": [
+    "validation",
+    "valid",
+    "validate",
+    "async",
+    "form",
+    "schema",
+    "functional",
+    "pure",
+    "sanitization",
+    "check",
+    "data",
+    "consistency"
+  ],
+  "homepage": "http://github.com/snd/waechter",
+  "author": {
+    "name": "Maximilian Krüger",
+    "email": "kruemaxi@gmail.com",
+    "url": "http://github.com/snd"
+  },
+  "bugs": {
+    "url": "http://github.com/snd/waechter/issues",
+    "email": "kruemaxi@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/snd/waechter.git"
+  },
+  "licenses": {
+    "type": "MIT",
+    "url": "git://github.com/snd/waechter/LICENSE"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "dependencies": {
+    "is_js": "0.2.1",
+    "bluebird": "2.9.34"
+  },
+  "devDependencies": {
+    "coffee-script": "1.9.3",
+    "nodeunit": "0.9.1"
+  },
+  "scripts": {
+    "compile": "coffee --bare --compile --output lib src",
+    "prepublish": "npm run compile",
+    "pretest": "npm run compile",
+    "test": "nodeunit test/*.coffee"
+  },
+  "main": "lib/waechter"
+}
