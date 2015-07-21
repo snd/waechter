@@ -30,8 +30,6 @@ providing some context and instructions.
 user data.
 -->
 
----
-
 a **predicate** is a function that takes a value and returns a boolean
 indicating whether that value is **valid**.
 
