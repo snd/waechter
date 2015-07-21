@@ -1,7 +1,7 @@
 {
   "name": "waechter",
   "version": "1.0.0-alpha.1",
-  "description": "",
+  "description": "simple, functional, sync/async validation for Node.js and browsers",
   "keywords": [
     "validation",
     "valid",
