@@ -11,6 +11,17 @@
 
 *waechter is german for guardian*
 
+```
+npm install waechter
+```
+
+```
+bower install waechter
+```
+
+[lib/waechter.js](lib/waechter.js) supports [AMD](http://requirejs.org/docs/whyamd.html).
+if [AMD](http://requirejs.org/docs/whyamd.html) is not available it sets the global variable `waechter`.
+
 require:
 
 ```javascript
@@ -74,11 +85,11 @@ null
 
 waechter currently comes with the following validators:
 
-- `exist`
-- `string`
-- `stringNotEmpty`
-- `email`
-- `stringMinLength(min)`
+- `waechter.exist`
+- `waechter.string`
+- `waechter.stringNotEmpty`
+- `waechter.email`
+- `waechter.stringMinLength(min)`
 
 you can easily make your own using `predicateToValidator`.
 
