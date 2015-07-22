@@ -1,0 +1,41 @@
+{
+  "name": "waechter",
+  "version": "1.0.0-alpha.1",
+  "homepage": "http://github.com/snd/hinoki",
+  "authors": [
+    "Maximilian Krüger <kruemaxi@googlemail.com>"
+  ],
+  "description": "simple, functional, sync/async validation for Node.js and browsers",
+  "keywords": [
+    "validation",
+    "valid",
+    "validate",
+    "async",
+    "form",
+    "schema",
+    "functional",
+    "pure",
+    "sanitization",
+    "check",
+    "data",
+    "consistency"
+  ],
+  "main": "lib/waechter.js",
+  "dependencies": {
+    "is_js": "0.2.1",
+    "bluebird": "2.9.34"
+  },
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
