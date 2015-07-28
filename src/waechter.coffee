@@ -49,14 +49,6 @@
       else
         errors
 
-  waechter.chainValidators = (validators...) ->
-    (value) ->
-      for validator in validators
-        errors = validator value
-        if errors?
-          return errors
-      null
-
   waechter.isThenable = (x) ->
     (x is Object(x)) and ('function' is typeof x.then)
 
@@ -91,11 +83,24 @@
         else
           errors
 
-  waechter.optional = (validator) ->
+  ################################################################################
+  # validator combinators
+
+  # make a validator optional
+  waechter.maybe = (validator) ->
     (value) ->
-      if isjs.undefined value
+      if isjs.not.existy value
         return
       validator value
+
+  # returns a validator that is only valid when all validators are valid
+  waechter.all = (validators...) ->
+    (value) ->
+      for validator in validators
+        errors = validator value
+        if errors?
+          return errors
+      null
 
   ################################################################################
   # validators together with their default error messages
@@ -106,19 +111,19 @@
   )
   waechter.errors.exist = 'must not be null or undefined'
 
-  waechter.string = waechter.chainValidators(
+  waechter.string = waechter.all(
     waechter.exist
     waechter.predicateToValidator(isjs.string, -> waechter.errors.string)
   )
   waechter.errors.string = 'must be a string'
 
-  waechter.stringNotEmpty = waechter.chainValidators(
+  waechter.stringNotEmpty = waechter.all(
     waechter.string
     waechter.predicateToValidator(isjs.not.empty, -> waechter.errors.stringNotEmpty)
   )
   waechter.errors.stringNotEmpty = 'must not be empty'
 
-  waechter.email = waechter.chainValidators(
+  waechter.email = waechter.all(
     waechter.string
     waechter.predicateToValidator(isjs.email, -> waechter.errors.email)
   )
@@ -127,7 +132,7 @@
   waechter.stringMinLength = (min) ->
     predicate = (value) ->
       value.length >= min
-    waechter.chainValidators(
+    waechter.all(
       waechter.stringNotEmpty
       waechter.predicateToValidator(predicate, -> waechter.errors.stringMinLength(min))
     )
