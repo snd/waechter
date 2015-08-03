@@ -77,7 +77,11 @@ you can make a **validator** from a **predicate** using `waechter.predicateToVal
   // the value that is returned when the predicate returns false
   'must be an email address'
 );
+```
 
+you can then use the **validator** to validate some data:
+
+```javascript
 > validateEmail('i am definitely not an email address');
 'must be an email address'
 
@@ -85,7 +89,7 @@ you can make a **validator** from a **predicate** using `waechter.predicateToVal
 null
 ```
 
-### builtin validators
+### these validators are builtin
 
 - `waechter.exist`
 - `waechter.string`
@@ -102,6 +106,15 @@ null
 you can easily make your own using `waechter.predicateToValidator`.
 
 ### composing validators
+
+`waechter.and(validators...)` returns a validator that returns
+null if all validators return null and otherwise returns the first error.
+
+`waechter.or(validators...)` returns a validator that returns
+null if at least one of the validators returns null and otherwise returns
+an array of errors.
+
+use `waechter.undefinedOr(validators...)` to make things optional.
 
 ### schemas
 
@@ -140,7 +153,7 @@ you can then use that **validator** to validate the structure of objects:
 null
 ```
 
-keys not present in the schema are not allowed:
+keys that are not present in the **schema** are not allowed in the data:
 
 ```javascript
 > validateUser({
@@ -179,13 +192,14 @@ you can lazily (only when needed) run **async validators** after **sync validato
   userSchema,
   userSchemaAsync
 );
+```
 
 you can mix schemas with sync and async validators in the arguments to
 `waechter.schemasToLazyAsyncValidator`.
 
 validators in later schemas are only run for keys that have no errors yet:
 
-```
+``` javascript
 > validateUser({
   email: 'invalid'
 }).then(function(errors) {
@@ -198,7 +212,7 @@ validators in later schemas are only run for keys that have no errors yet:
 ```
 here the **validator** `userSchemaAsync.email` wasn't called.
 
-```
+``` javascript
 > validateUser({
   email: 'taken@example.com'
 }).then(function(errors) {
