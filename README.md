@@ -103,7 +103,7 @@ null
 - `waechter.undefined`
 - `waechter.null`
 
-you can easily make your own using `waechter.predicateToValidator`.
+you can easily make your own **validators** using `waechter.predicateToValidator`.
 
 ### composing validators
 
