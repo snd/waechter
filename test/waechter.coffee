@@ -4,7 +4,7 @@ waechter = require '../src/waechter'
 
 module.exports =
 
-  'sync': (test) ->
+  'schemaToValidator': (test) ->
     userSchema =
       email: waechter.email
       password: waechter.stringNotEmpty
@@ -40,7 +40,7 @@ module.exports =
 
     test.done()
 
-  'async': (test) ->
+  'schemasToLazyAsyncValidator': (test) ->
     schemaUserShared =
       name: waechter.stringNotEmpty
       password: waechter.stringMinLength(8)
@@ -137,3 +137,83 @@ module.exports =
         test.deepEqual callsToFirstUserWhereEmail, ['test@example.com', 'test@example.com', 'this-email-is-taken@example.com']
 
         test.done()
+
+  'or': (test) ->
+    validator = waechter.or(
+      waechter.email
+      waechter.true
+      waechter.numberWithin(6, 10)
+    )
+
+    test.deepEqual validator(), [
+      'one of the following conditions must be fulfilled:'
+      'must not be null or undefined'
+      'must be `true`'
+      'must be a number'
+    ]
+    test.equal validator(true), null
+    test.deepEqual validator(10), [
+      'one of the following conditions must be fulfilled:'
+      'must be a string'
+      'must be `true`'
+      'must be a number within 6 and 10'
+    ]
+    test.equal validator(8), null
+    test.deepEqual validator('aaa'), [
+      'one of the following conditions must be fulfilled:'
+      'must be an email address'
+      'must be `true`'
+      'must be a number'
+    ]
+    test.equal validator('test@example.com'), null
+    test.done()
+
+  'and': (test) ->
+    validator = waechter.and(
+      waechter.exist
+      waechter.string
+      waechter.stringNotEmpty
+      waechter.email
+    )
+
+    test.equal validator(), 'must not be null or undefined'
+    test.equal validator(5), 'must be a string'
+    test.equal validator(''), 'must not be empty'
+    test.equal validator('aaa'), 'must be an email address'
+    test.equal validator('test@example.com'), null
+    test.done()
+
+  'numberWithin': (test) ->
+    test.expect 8
+    try
+      test.equal waechter.numberWithin('a', 'b')
+    catch e
+      test.equal e.message, 'min and max arguments must be numbers'
+    validator = waechter.numberWithin(2, 6)
+    error = 'must be a number within 2 and 6'
+    test.equal validator(1), error
+    test.equal validator(2), error
+    test.equal validator(3), null
+    test.equal validator(4), null
+    test.equal validator(5), null
+    test.equal validator(6), error
+    test.equal validator(7), error
+    test.done()
+
+  'true': (test) ->
+    error = 'must be `true`'
+    test.equal waechter.true(true), null
+    test.equal waechter.true(false), error
+    test.equal waechter.true(null), error
+    test.equal waechter.true(), error
+    test.equal waechter.true('true'), error
+    test.done()
+
+  'false': (test) ->
+    error = 'must be `false`'
+    test.equal waechter.false(false), null
+    test.equal waechter.false(true), error
+    test.equal waechter.false(null), error
+    test.equal waechter.false(), error
+    test.equal waechter.false('false'), error
+    test.done()
