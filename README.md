@@ -41,6 +41,8 @@ providing some context and instructions.
 user data.
 -->
 
+### predicates
+
 a **predicate** is a function that takes a value and returns a boolean
 indicating whether that value is **valid**.
 
@@ -58,7 +60,7 @@ false
 true
 ```
 
----
+### validators
 
 a **validator** is a function that takes a value and
 returns nothing (`null` or `undefined`) if the value is **valid**.
@@ -66,7 +68,7 @@ otherwise it returns a value describing the error.
 that value is usually a string that is a helpful error message
 or an object whose values are error messages.
 
-you can make a **validator** from a predicate like so:
+you can make a **validator** from a **predicate** using `waechter.predicateToValidator`
 
 ```javascript
 > var validateEmail = waechter.predicateToValidator(
@@ -83,17 +85,25 @@ you can make a **validator** from a predicate like so:
 null
 ```
 
-waechter currently comes with the following validators:
+### builtin validators
 
 - `waechter.exist`
 - `waechter.string`
 - `waechter.stringNotEmpty`
 - `waechter.email`
 - `waechter.stringMinLength(min)`
+- `waechter.number`
+- `waechter.numberWithin(min, max)` (range is exclusive)
+- `waechter.true`
+- `waechter.false`
+- `waechter.undefined`
+- `waechter.null`
 
-you can easily make your own using `predicateToValidator`.
+you can easily make your own using `waechter.predicateToValidator`.
 
----
+### composing validators
+
+### schemas
 
 a **schema** is an object whose values are **validators**:
 
@@ -130,8 +140,77 @@ you can then use that **validator** to validate the structure of objects:
 null
 ```
 
-*more documentation (especially on async validation) is coming soon !*
+keys not present in the schema are not allowed:
 
-*[also see the tests for more usage examples.](test/waechter.coffee)*
+```javascript
+> validateUser({
+  email: 'test@example.com',
+  password: 'topsecret'
+  is_admin: true
+});
+{
+  is_admin: 'disallowed key'
+}
+```
+
+### async validators
+
+an **async validator** is like a **validator** but returns a promise.
+
+you can lazily (only when needed) run **async validators** after **sync validators** like so:
+
+```javascript
+> var userSchema = {
+  email: waechter.email,
+  password: waechter.stringNotEmpty
+};
+
+> var userSchemaAsync = {
+  email: function(email) {
+    return doesUserWithEmailAlreadyExistInDatabase(email).then(function(exists) {
+      if (exists) {
+        return 'taken';
+      }
+    });
+  }
+};
+
+> validateUser = waechter.schemasToLazyAsyncValidator(
+  userSchema,
+  userSchemaAsync
+);
+
+you can mix schemas with sync and async validators in the arguments to
+`waechter.schemasToLazyAsyncValidator`.
+
+validators in later schemas are only run for keys that have no errors yet:
+
+```
+> validateUser({
+  email: 'invalid'
+}).then(function(errors) {
+  > errors
+  {
+    email: 'must be an email address',
+    password: 'must not be null or undefined'
+  }
+});
+```
+here the **validator** `userSchemaAsync.email` wasn't called.
+
+```
+> validateUser({
+  email: 'taken@example.com'
+}).then(function(errors) {
+  > errors
+  {
+    email: 'taken',
+    password: 'must not be null or undefined'
+  }
+});
+```
+this time the **validator** `userSchemaAsync.email` was called.
+
+*[see the tests for more usage examples.](test/waechter.coffee)*
 
 ## [license: MIT](LICENSE)
