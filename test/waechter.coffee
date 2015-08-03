@@ -183,6 +183,25 @@ module.exports =
     test.equal validator('test@example.com'), null
     test.done()
 
+  'undefinedOr': (test) ->
+    validator = waechter.undefinedOr(
+      waechter.email
+    )
+
+    test.equal validator(), null
+    test.deepEqual validator(null), [
+      'one of the following conditions must be fulfilled:'
+      'must be undefined'
+      'must not be null or undefined'
+    ]
+    test.deepEqual validator('aa'), [
+      'one of the following conditions must be fulfilled:'
+      'must be undefined'
+      'must be an email address'
+    ]
+    test.equal validator('test@example.com'), null
+    test.done()
+
   'numberWithin': (test) ->
     test.expect 8
     try
