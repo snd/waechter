@@ -195,5 +195,11 @@
       waechter.errors.false
   waechter.errors.false = 'must be `false`'
 
+  waechter.undefined = waechter.predicateToValidator(isjs.undefined, -> waechter.errors.undefined)
+  waechter.errors.undefined = 'must be undefined'
+
+  waechter.null = waechter.predicateToValidator(isjs.null, -> waechter.errors.null)
+  waechter.errors.null = 'must be undefined'
+
   return waechter
 )
