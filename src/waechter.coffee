@@ -105,6 +105,8 @@
     (value) ->
       results = []
       for validator in validators
+        unless 'function' is typeof validator
+          throw new Error "validator must be a function but is #{typeof validator}"
         errors = validator value
         unless errors?
           return null
@@ -118,6 +120,8 @@
     # TODO at least one validator
     (value) ->
       for validator in validators
+        unless 'function' is typeof validator
+          throw new Error "validator must be a function but is #{typeof validator}"
         errors = validator value
         if errors?
           return errors
