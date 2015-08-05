@@ -160,6 +160,9 @@
   waechter.number = waechter.predicateToValidator(isjs.number, -> waechter.errors.number)
   waechter.errors.number = 'must be a number'
 
+  waechter.boolean = waechter.predicateToValidator(isjs.boolean, -> waechter.errors.boolean)
+  waechter.errors.boolean = 'must be `true` or `false`'
+
   # exclusive
   waechter.numberWithin = (min, max) ->
     unless isjs.number(min) and isjs.number(max)
