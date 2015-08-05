@@ -102,6 +102,7 @@ null
 - `waechter.false`
 - `waechter.undefined`
 - `waechter.null`
+- `waechter.boolean`
 
 you can easily make your own **validators** using `waechter.predicateToValidator`.
 
