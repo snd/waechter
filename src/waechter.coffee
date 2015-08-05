@@ -40,7 +40,7 @@
         validator = schema[key]
         unless 'function' is typeof validator
           throw new Error "validator must be a function but is #{typeof validator}"
-        error = validator data[key]
+        error = validator data[key], data
         if error?
           errors[key] = error
 
@@ -73,7 +73,7 @@
           validator = schema[key]
           unless 'function' is typeof validator
             throw new Error "validator must be a function but is #{typeof validator}"
-          error = validator data[key]
+          error = validator data[key], data
           if waechter.isThenable error
             pending[key] = error
           else if error?
